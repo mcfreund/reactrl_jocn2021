@@ -20,4 +20,4 @@ A multivariate analysis of differences between sessions in profiles of activatio
 | ----------- | -- | --- |
 | distance_jocn.rmd      | ROI-wise univariate contrasts on beta coefs from fMRI 1st-level GLM: in/roistats*.RDS | analysis report: code/profile_analysis/\*.html; figure: out/fig_multivariate_triangle.tiff |
 
-* in/roistats*.RDS wrangled from AFNI output files via save_roistats.R
+* in/roistats*.RDS wrangled from AFNI output files via code/\_wrangle/save_roistats.R
