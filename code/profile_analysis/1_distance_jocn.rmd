@@ -1,5 +1,5 @@
 ---
-title: "multiparcel distance analysis"
+title: "activation profile analysis"
 author: "michael freund"
 date: "`r Sys.Date()`"
 output:
@@ -10,8 +10,13 @@ output:
     gallery: true
 ---
   
+
+# about
+
+supplementary analysis for jocn manuscript
+
   
-```{r setup, include = FALSE}
+```{r setup, message = FALSE, warning = FALSE}
 
 source(here::here("code", "_packages.R"))
 source(here("code", "_vars.R"))
@@ -19,7 +24,7 @@ source(here("code", "_vars.R"))
 
 ## read data:
 
-a <- readRDS(here("out", "roistats_hilo_target_2trpk_unshifted.RDS"))
+a <- readRDS(here("in", "roistats_hilo_target_2trpk_unshifted.RDS"))
 
 ## get subjs with complete data
 
@@ -47,10 +52,34 @@ X_noise <- array(rnorm(prod(dim(X))), dim = c(dim(X)), dimnames = dimnames(X))
 
 ```
 
-# about
 
-* Subjects: `r length(subjs.complete)` included (with complete fMRI data)
-* INCLUDES TWINS
+## notes
+
+
+**Data/sample/preproc**
+
+  * Subjects: `r length(subjs.complete)` included (with complete fMRI data; INCLUDES TWINS)
+  * surface + fMRIprep
+  * schaefer 400-07
+  
+**1st-Level GLM**
+
+  * 2trpk, runwise GLMs
+  
+Target TRs:
+
+  * Axcpt: `r target.trs$Axcpt`
+  * Cuedts: `r target.trs$Cuedts`
+  * Stern: `r target.trs$Stern`
+  * Stroop: `r target.trs$Stroop`
+
+GLM contrasts:
+
+  * Axcpt: $\text{BY} - \text{BX}$
+  * Cuedts: $(\text{InConSwitch} + \text{InConRepeat} - \text{ConSwitch} - \text{ConRepeat})/2$
+  * Stern: $\text{LL5RN} - \text{LL5NN}$
+  * Stroop: $(\text{PC50InCon} + \text{biasInCon} - \text{PC50Con} - \text{biasCon})/2$
+
 
 
 # LDA projection
@@ -251,6 +280,44 @@ distance_cv <- function(B1, B2, m, regressors) {
   matrix(D, ncol = length(regressors), dimnames = list(.row = regressors, .col = regressors))  ## reshape to matrix
   
 }
+
+
+
+contrast_matrix <- function(n, condition.names) {
+  # n <- 10
+  # condition.names <- letters[1:n]
+  
+  if (n < 2) stop("you need more than 1 condition you dummy")
+  
+  W <- matrix(0, nrow = n^2, ncol = n)
+  
+  if (missing(condition.names)) {
+    dimnames(W) <- list(contrast = NULL, condition = NULL)
+  } else {
+    dimnames(W) <- list(
+      contrast = paste0(rep(condition.names, each = n), "_", rep(condition.names, n)),
+      condition = condition.names
+    )
+  }
+  
+  for (condition.i in seq_len(n)) {
+    # condition.i = 1
+    
+    row.beg <- (condition.i - 1) * n + 1
+    row.end <- (condition.i - 1) * n + n
+    W.i <- W[row.beg:row.end, ]  ## square matrix; the contrasts that define a column of the similarity matrix
+    
+    W.i[, condition.i] <- 1  ## the condition to which all others are contrasted
+    diag(W.i) <- diag(W.i) - 1  ## all others
+    
+    W[row.beg:row.end, ] <- W.i
+    
+  }
+  
+  W
+  
+}
+
 
 M <- contrast_matrix(3, sessions)  ## matrix that calculates all pairwise contrasts between conditions
 

@@ -6,63 +6,9 @@ get.network <- function(x) {
   gsub("^.H_(Vis|SomMot|Cont|Default|Limbic|SalVentAttn|DorsAttn)_.*", "\\1", x)
 }
 
-
-cowplot.title <- function(x) {
-  ggdraw() +
-    draw_label(
-      x,
-      fontface = 'bold',
-      x = 0,
-      hjust = 0
-    ) +
-    theme(
-      # add margin on the left of the drawing canvas,
-      # so title is aligned with left edge of first plot
-      plot.margin = margin(0, 0, 0, 7)
-    )
-}
-
-
-symmat4ggplot <- function(R, var.names = c("v1", "v2"), val.name = "value") {
-  
-  ## make factors for row and column labels
-  dn <- dimnames(R)
-  if (is.null(dn)) {
-    dn <- setNames(list(paste0("cell_", 1:nrow(R)), paste0("cell_", 1:ncol(R))), var.names)
-  } else {
-    names(dn) <- var.names  
-  }
-  
-  labels <- expand.grid(dn, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = TRUE)
-  labels[[2]] <- factor(labels[[2]], levels = rev(levels(labels[[2]])))
-  
-  r <- c(R)
-  
-  cbind(labels, setNames(as.data.frame(c(R)), val.name))
-  
-}
-
-
-matplot <- function(x) {
-  
-  ggplot(symmat4ggplot(x), aes(v1, v2, fill = value)) +
-    geom_raster() +
-    scale_fill_viridis_c(option = "inferno") +
-    theme_minimal() +
-    theme(
-      axis.text = element_blank(), axis.title = element_blank(), legend.position = "none",
-      panel.border = element_blank(), panel.grid = element_blank()
-    )
-  
-}
-
-
-
 enlist <- function(x) setNames(vector("list", length(x)), x)
 
-
 combo_paste <- function(a, b, ..., sep = "_") apply(expand.grid(a, b, ...), 1, paste0, collapse = sep)
-
 
 read_schaefer <- function(path.atlas) {
   
@@ -102,52 +48,6 @@ read_schaefer <- function(path.atlas) {
 }
 
 
-
-
-contrast_matrix <- function(n, condition.names) {
-  # n <- 10
-  # condition.names <- letters[1:n]
-  
-  if (n < 2) stop("you need more than 1 condition you dummy")
-  
-  W <- matrix(0, nrow = n^2, ncol = n)
-  
-  if (missing(condition.names)) {
-    dimnames(W) <- list(contrast = NULL, condition = NULL)
-  } else {
-    dimnames(W) <- list(
-      contrast = paste0(rep(condition.names, each = n), "_", rep(condition.names, n)),
-      condition = condition.names
-    )
-  }
-  
-  for (condition.i in seq_len(n)) {
-    # condition.i = 1
-    
-    row.beg <- (condition.i - 1) * n + 1
-    row.end <- (condition.i - 1) * n + n
-    W.i <- W[row.beg:row.end, ]  ## square matrix; the contrasts that define a column of the similarity matrix
-    
-    W.i[, condition.i] <- 1  ## the condition to which all others are contrasted
-    diag(W.i) <- diag(W.i) - 1  ## all others
-    
-    W[row.beg:row.end, ] <- W.i
-    
-  }
-  
-  W
-  
-}
-
-mat2vec <- function(m, full.matrix = FALSE, varnames = c(".row", ".col"), ...) {
-  
-  if (any(is.na(m))) stop("matrix contains NA values.")
-  if (!is.array(m)) stop("m is not array.")
-  if (!full.matrix) m[upper.tri(m, diag = TRUE)] <- NA
-  
-  reshape2::melt(m, as.is = TRUE, na.rm = TRUE, varnames = varnames, ...)
-  
-}
 
 
 ## constants ----

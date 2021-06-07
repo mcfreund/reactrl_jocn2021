@@ -1,5 +1,5 @@
 # too large:
-out/betas*.RDS
+in/betas*.RDS
 
 # History files
 .Rhistory

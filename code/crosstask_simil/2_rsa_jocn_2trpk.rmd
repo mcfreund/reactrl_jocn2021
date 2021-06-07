@@ -1,5 +1,5 @@
 ---
-title: 'multitask pattern similarity: high versus low, 2trpk'
+title: 'multitask pattern similarity'
 author: "michael freund"
 date: "`r Sys.Date()`"
 output:
@@ -12,13 +12,13 @@ output:
 ---
 
 
-# intro
+# about
 
 
 supplementary analysis for jocn manuscript
 
 
-```{r setup, include = FALSE}
+```{r setup, message = FALSE, warning = FALSE}
 
 source(here::here("code", "_packages.R"))
 source(here("code", "_vars.R"))
@@ -46,7 +46,7 @@ theme_mat <- list(
 
 **Data/sample/preproc**
 
-  * UB55 sans DMCC52*
+  * DMCC55B
   * surface + fMRIprep
   * schaefer 400-07
   
@@ -101,6 +101,40 @@ rsm.hilo[grepl("lo", conditions), grepl("hi", conditions)] <- 1
 rsm.hilo[grepl("hi", conditions), grepl("lo", conditions)] <- 1
 
 ## plot
+
+
+symmat4ggplot <- function(R, var.names = c("v1", "v2"), val.name = "value") {
+  
+  ## make factors for row and column labels
+  dn <- dimnames(R)
+  if (is.null(dn)) {
+    dn <- setNames(list(paste0("cell_", 1:nrow(R)), paste0("cell_", 1:ncol(R))), var.names)
+  } else {
+    names(dn) <- var.names  
+  }
+  
+  labels <- expand.grid(dn, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = TRUE)
+  labels[[2]] <- factor(labels[[2]], levels = rev(levels(labels[[2]])))
+  
+  r <- c(R)
+  
+  cbind(labels, setNames(as.data.frame(c(R)), val.name))
+  
+}
+
+
+matplot <- function(x) {
+  
+  ggplot(symmat4ggplot(x), aes(v1, v2, fill = value)) +
+    geom_raster() +
+    scale_fill_viridis_c(option = "inferno") +
+    theme_minimal() +
+    theme(
+      axis.text = element_blank(), axis.title = element_blank(), legend.position = "none",
+      panel.border = element_blank(), panel.grid = element_blank()
+    )
+  
+}
 
 
 plot_grid(
@@ -164,6 +198,23 @@ p.allcor.network <- stats.subjs %>%
   labs(y = "cor (z)")
 
 
+
+cowplot.title <- function(x) {
+  ggdraw() +
+    draw_label(
+      x,
+      fontface = 'bold',
+      x = 0,
+      hjust = 0
+    ) +
+    theme(
+      # add margin on the left of the drawing canvas,
+      # so title is aligned with left edge of first plot
+      plot.margin = margin(0, 0, 0, 7)
+    )
+}
+
+
 plot_grid(
   cowplot.title("Pattern correlations by components of RSA model"),
   plot_grid(plot_grid(p.allcor.density, p.allcor.box, ncol = 1), p.allcor.network, nrow = 1),
@@ -175,7 +226,7 @@ plot_grid(
 ```
 
 
-# Parcel-wise stats
+# parcel-wise stats
 
 ## stats
 
@@ -228,7 +279,7 @@ contrasts.subjs.35 %>%
 
 ```
 
-## plot
+## figure for manuscript
 
 ```{r}
 
@@ -272,7 +323,7 @@ p.conditional
 
 
 ggsave(
-  here("code", "fig_crosstasksimil_conditoinal.tiff"),
+  here("out", "fig_crosstasksimil_conditional.tiff"),
   p.conditional, device = "tiff", dpi = 600, width = 8, height = 6, unit = "cm"
   )
 

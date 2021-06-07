@@ -7,30 +7,39 @@ parcels <- dimnames(rsarray)$parcel
 n.mods <- length(parcels) * length(subjs)
 
 
-## build models:
+## build models ----
+## create weight matrix X that, when dotted with a vectorized RSM, will take average of relevant cells of matrix.
 
-lab <- mat2vec(rsarray[, , 1, 1])[, c(".row", ".col")]
-lab <- lab %>% 
+## get condition labels of cells of RSM:
+
+## NB: first two dims of rsarray are rows and columns of representational similarity matrix (RSM)
+lab <- 
+  expand.grid(dimnames(rsarray)[1:2]) %>%
   separate(.row, c("row_task", "row_cond")) %>%
-  separate(.col, c("col_task", "col_cond"))
+  separate(.col, c("col_task", "col_cond"))  ## create data.frame of labels of cells of RSM
+temp_rsm <- diag(dim(rsarray)[1])  ## template representational similarity matrix
+lab <- lab[which(lower.tri(temp_rsm)), ]  ## get labels for unique off-diag elements
+
+## booleans for features:
+
 is.bw.task <- lab$row_task != lab$col_task
 is.wn.hi <- lab$row_cond == "hi" & lab$col_cond == "hi"
 is.wn.lo <- lab$row_cond == "lo" & lab$col_cond == "lo"
 is.bw.lo <- lab$row_cond != lab$col_cond
-X <- cbind(hihi = is.wn.hi, lolo = is.wn.lo, hilo = is.bw.lo)
-X <- X[is.bw.task, ]
-X <- sweep(X, 2, colSums(X), "/")  ## holds the 
+
+## combine and scale
+
+X <- cbind(hihi = is.wn.hi, lolo = is.wn.lo, hilo = is.bw.lo) & is.bw.task
+X <- sweep(X, 2, colSums(X), "/")  ## scale so will take mean
 
 
 
 ## fit models ----
 
-
 ## prep:
 
-vecs <- apply(rsarray, c("parcel", "subj"), function(x) x[lower.tri(x)][is.bw.task])  ## vectorize, subset by btw task only
+vecs <- apply(rsarray, c("parcel", "subj"), function(x) x[lower.tri(x)])  ## vectorize
 vecs <- as.data.table(vecs)
-
 
 ## regress:
 
