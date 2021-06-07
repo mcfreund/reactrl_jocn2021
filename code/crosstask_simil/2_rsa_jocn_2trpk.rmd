@@ -1,0 +1,282 @@
+---
+title: 'multitask pattern similarity: high versus low, 2trpk'
+author: "michael freund"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::html_clean:
+    highlight: pygments
+    self_contained: true
+    lightbox: true
+    gallery: true
+    
+---
+
+
+# intro
+
+
+supplementary analysis for jocn manuscript
+
+
+```{r setup, include = FALSE}
+
+source(here::here("code", "_packages.R"))
+source(here("code", "_vars.R"))
+
+conditions <- combo_paste(tasks, c("hi", "lo"))
+n.dim <- length(conditions)
+tris <- fread(here("in", "rsamods.csv")) %>% filter(grepl("run1", .row), grepl("run1", .col))
+X <- tris %>% select(where(is.numeric)) %>% as.matrix
+
+rsarray <- readRDS(here("out", "corr-biased_unpre_jocn_2trpk.RDS"))
+
+stats.subjs <- fread(here("out", "subjs_jocn.csv"))
+
+theme_mat <- list(
+  theme(axis.text.y = element_text(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+  )
+
+
+```
+
+
+
+## Notes
+
+
+**Data/sample/preproc**
+
+  * UB55 sans DMCC52*
+  * surface + fMRIprep
+  * schaefer 400-07
+  
+**1st-Level GLM**
+
+  * 2trpk, runwise GLMs
+  
+Target TRs:
+
+  * Axcpt: `r target.trs$Axcpt`
+  * Cuedts: `r target.trs$Cuedts`
+  * Stern: `r target.trs$Stern`
+  * Stroop: `r target.trs$Stroop`
+
+GLM contrasts:
+
+  * Axcpt: $\text{BY} - \text{BX}$
+  * Cuedts: $(\text{InConSwitch} + \text{InConRepeat} - \text{ConSwitch} - \text{ConRepeat})/2$
+  * Stern: $\text{LL5RN} - \text{LL5NN}$
+  * Stroop: $(\text{PC50InCon} + \text{biasInCon} - \text{PC50Con} - \text{biasCon})/2$
+
+
+**RSA**
+
+Similarity measure:
+
+  * Similarity measure: standard linear correlation
+  * NOT cross-valdiated (e.g., not cv-Euclidean/Mahalanobis)
+  * NOT prewhitened
+  * betas averaged across run, within task, for RSA
+
+models:
+
+  * focused only on between-task correlations
+  * atanh transformed
+
+
+```{r fig.width = 16, echo = FALSE}
+
+## build models
+
+rsm.empty <- matrix(0, ncol = n.dim, nrow = n.dim, dimnames = list(conditions, conditions))
+rsm.task <- rsm.empty
+rsm.hi <- rsm.empty
+rsm.lo <- rsm.empty
+rsm.hilo <- rsm.empty
+
+for (task.i in tasks) rsm.task[grepl(task.i, conditions), grepl(task.i, conditions)] <- 1
+rsm.hi[grepl("hi", conditions), grepl("hi", conditions)] <- 1
+rsm.lo[grepl("lo", conditions), grepl("lo", conditions)] <- 1
+rsm.hilo[grepl("lo", conditions), grepl("hi", conditions)] <- 1
+rsm.hilo[grepl("hi", conditions), grepl("lo", conditions)] <- 1
+
+## plot
+
+
+plot_grid(
+  plot_grid(
+    rsm.task %>% matplot + theme_mat + labs(title = "task (cells excluded)"),
+    rsm.hi   %>% matplot + theme_mat + labs(title = "hihi"),
+    rsm.lo   %>% matplot + theme_mat + labs(title = "lolo"),
+    rsm.hilo   %>% matplot + theme_mat + labs(title = "hilo"),
+    nrow = 1
+  ),
+  rel_heights = c(0.1, 1)
+)
+
+
+```
+
+
+
+# quick look: all correlations
+
+```{r fig.width = 10, fig.height = 7, echo = FALSE, message = FALSE}
+
+p.allcor.density <- stats.subjs %>%
+  
+  ggplot(aes(b, y = term, fill = term)) +
+  geom_density_ridges() +
+  
+  scale_fill_brewer(type = "qual", palette = 5) +
+  
+  theme(legend.position = "none") +
+  labs(x = "cor (z)")
+
+
+p.allcor.box <- stats.subjs %>%
+  
+  ggplot(aes(term, b, fill = term)) +
+  geom_hline(yintercept = 0) +
+  geom_boxplot(width = 0.1, notch = TRUE) +
+  
+  scale_fill_brewer(type = "qual", palette = 5) +
+  
+  theme(legend.position = "none") +
+  labs(y = "cor (z)") 
+
+
+
+p.allcor.network <- stats.subjs %>%
+  
+  ggplot(aes(b, y = term, fill = term)) +
+  geom_density_ridges() +
+  
+  scale_fill_brewer(type = "qual", palette = 5) +
+  
+  facet_grid(
+    rows = vars(get.network(parcel)), 
+    labeller = labeller(run = c(bt = "between-run", wn = "within-run")),
+    scales = "free_x"
+    ) +
+  
+  theme(legend.position = "none") +
+  labs(y = "cor (z)")
+
+
+plot_grid(
+  cowplot.title("Pattern correlations by components of RSA model"),
+  plot_grid(plot_grid(p.allcor.density, p.allcor.box, ncol = 1), p.allcor.network, nrow = 1),
+  ncol = 1, 
+  rel_heights = c(0.1, 1)
+)
+
+
+```
+
+
+# Parcel-wise stats
+
+## stats
+
+```{r}
+
+## calculate contrasts between correlations (z values):
+
+contrasts.subjs <- stats.subjs %>%
+  
+  pivot_wider(names_from = "term", values_from = "b") %>%
+  
+  mutate(
+    hihi_lolo = hihi - lolo,
+    hihi_hilo = hihi - hilo,
+    lolo_hilo = lolo - hilo
+    ) %>%
+  
+  pivot_longer(
+    cols = c("hihi_hilo", "lolo_hilo", "hihi", "lolo", "hilo", "hihi_lolo"), 
+    names_to = "contrast", values_to = "b"
+    )
+
+
+## subset DMCC35 ROIs and average correlations over ROI by subject:
+
+contrasts.subjs.35 <- contrasts.subjs %>%
+  
+  filter(
+    parcel %in% parcellation$key[dmcc35], 
+    contrast %in% c("hihi", "hilo", "lolo")
+  ) %>%
+
+  group_by(subj, contrast) %>%
+  summarize(b = mean(b))
+
+
+## print group statistics
+
+contrasts.subjs.35 %>%
+  
+  group_by(contrast) %>%
+  summarize(
+    p = t.test(b)$p.value,
+    statistic = t.test(b)$statistic,
+    b = mean(b),
+    .groups = "drop_last"
+    ) %>% 
+  kable
+
+
+```
+
+## plot
+
+```{r}
+
+p.conditional <- contrasts.subjs.35 %>%
+
+  ggplot(aes(contrast, b)) +
+  
+  geom_hline(yintercept = 0) +
+  
+  stat_summary(
+    fun = mean, geom = "bar", fill = "grey60",
+    width = 0.5
+    ) +
+  stat_summary(
+    fun.data = "mean_cl_boot", 
+    geom = "errorbar", width = 0, size = 1
+    ) +
+  
+  labs(y = "Mean correlation (z)", x = "Condition pair") +
+  scale_x_discrete(labels = c("Cor(Hi, Hi)", "Cor(Hi, Lo)", "Cor(Lo, Lo)")) +
+  
+  theme_minimal(base_size = 14) +
+  
+  theme(
+   legend.position = "none", 
+   panel.grid      = element_blank(), 
+   panel.border    = element_blank(),
+   axis.line.y     = element_line(),
+   axis.ticks.y    = element_line(),
+   axis.text.x = element_text(size = rel(0.75))
+  ) +
+  
+  coord_capped_cart(left = "both") +
+  
+  annotate(geom = "segment", x = 1, xend = 2, y = -0.04, yend = -0.04, size = 0.75) +
+  annotate(geom = "segment", x = 1, xend = 3, y = -0.06, yend = -0.06, size = 0.75) +
+  annotate(geom = "segment", x = 2, xend = 3, y = -0.08, yend = -0.08, size = 0.75)
+
+
+p.conditional
+
+
+ggsave(
+  here("code", "fig_crosstasksimil_conditoinal.tiff"),
+  p.conditional, device = "tiff", dpi = 600, width = 8, height = 6, unit = "cm"
+  )
+
+
+```
+
+

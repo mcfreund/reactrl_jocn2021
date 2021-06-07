@@ -1,3 +1,6 @@
+# too large:
+out/betas*.RDS
+
 # History files
 .Rhistory
 .Rapp.history
