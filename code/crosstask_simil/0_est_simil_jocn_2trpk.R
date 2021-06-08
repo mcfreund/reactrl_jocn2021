@@ -62,15 +62,15 @@ gc()
 simil <- 
   array(
     NA,
-    dim = c(length(conditions), length(conditions), length(parcellation$key), length(subjs55)),
-    dimnames = list(.row = conditions, .col = conditions, parcel = parcellation$key, subj = subjs55)
+    dim = c(length(conditions), length(conditions), length(schaeferkey), length(subjs55)),
+    dimnames = list(.row = conditions, .col = conditions, parcel = schaeferkey, subj = subjs55)
   )
 
 
 for (subj.i in seq_along(subjs55))  {
   # subj.i = 1
   
-  res <- enlist(parcellation$key)
+  res <- enlist(schaeferkey)
   
   
   name.subj.i <- subjs55[subj.i]
@@ -80,7 +80,7 @@ for (subj.i in seq_along(subjs55))  {
   betas.subj.i <- betas[, , subj.i]
   
   
-  for (parcel.i in seq_along(parcellation$key)) {
+  for (parcel.i in seq_along(schaeferkey)) {
     # parcel.i = 20
     
     ## mask:

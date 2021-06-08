@@ -4,7 +4,6 @@ source(here("code", "_vars.R"))
 
 rsarray <- readRDS(here("out", "corr-biased_unpre_jocn_2trpk.RDS"))
 parcels <- dimnames(rsarray)$parcel
-n.mods <- length(parcels) * length(subjs)
 
 
 ## build models ----

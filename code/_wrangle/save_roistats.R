@@ -10,19 +10,19 @@ source(here("code", "_vars.R"))
 roimeans_hilo <- array(
   NA,
   dim = c(
-    length(subjs),
-    length(parcellation$key),
+    length(subjs80),
+    length(schaeferkey),
     length(tasks),
     length(sessions)
   ),
-  dimnames = list(subj = subjs, parcel = parcellation$key, task = tasks, session = sessions)
+  dimnames = list(subj = subjs80, parcel = schaeferkey, task = tasks, session = sessions)
 )
 
 
 ## loop over tasks, subjs, runs; write 3droistats to results
 
 
-for (subj.i in seq_along(subjs)) {
+for (subj.i in seq_along(subjs80)) {
   
   for (task.i in seq_along(tasks)) {
     
@@ -31,10 +31,10 @@ for (subj.i in seq_along(subjs)) {
       
       fname.i <-
         file.path(
-          dir.nil.dmcc2.afni, subjs[subj.i], "SURFACE_RESULTS",  tasks[task.i],
+          dir.nil.dmcc2.afni, subjs80[subj.i], "SURFACE_RESULTS",  tasks[task.i],
           paste0(sessions[session.i], "_", glms[task.i]),
           paste0(
-            subjs[subj.i], "_timecourses_", sessions[session.i], "_", contrs[task.i],
+            subjs80[subj.i], "_timecourses_", sessions[session.i], "_", contrs[task.i],
             "_Coef_tents_Schaefer2018_400Parcels_7Networks_order_10K"
             )
           )

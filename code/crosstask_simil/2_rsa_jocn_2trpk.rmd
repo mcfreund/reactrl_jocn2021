@@ -255,7 +255,7 @@ contrasts.subjs <- stats.subjs %>%
 contrasts.subjs.35 <- contrasts.subjs %>%
   
   filter(
-    parcel %in% parcellation$key[dmcc35], 
+    parcel %in% schaeferkey[dmcc35], 
     contrast %in% c("hihi", "hilo", "lolo")
   ) %>%
 

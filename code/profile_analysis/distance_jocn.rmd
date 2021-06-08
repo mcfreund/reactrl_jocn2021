@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output:
   rmdformats::html_clean:
     highlight: pygments
-    self_contained: true
+    self_contained: false
     lightbox: true
     gallery: true
 ---
@@ -30,17 +30,17 @@ a <- readRDS(here("in", "roistats_hilo_target_2trpk_unshifted.RDS"))
 
 is.missing.fmri <- apply(a, 1, function(x) any(is.na(x)))
 subjs.missing.fmri <- names(is.missing.fmri)[is.missing.fmri]
-subjs.complete <- sort(setdiff(subjs, subjs.missing.fmri))
+subjs.complete <- sort(setdiff(subjs80, subjs.missing.fmri))
 a <- a[subjs.complete, , , ]
 
 
 ## subset data by DMCC35 parcels
 
-X <- a[, parcellation$key[dmcc35], , ]
-dim(X) <- c(length(subjs.complete), length(parcellation$key[dmcc35])*length(tasks), length(sessions))
+X <- a[, schaeferkey[dmcc35], , ]
+dim(X) <- c(length(subjs.complete), length(schaeferkey[dmcc35])*length(tasks), length(sessions))
 dimnames(X) <- list(
   subj = subjs.complete, 
-  parcel_task = combo_paste(parcellation$key[dmcc35], tasks), 
+  parcel_task = combo_paste(schaeferkey[dmcc35], tasks), 
   session = sessions
   )
 
