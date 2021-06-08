@@ -9,6 +9,10 @@ source(here("code", "_vars.R"))
 
 dirs <- expand.grid(subj = subjs55, task = tasks, session = "baseline", stringsAsFactors = FALSE)
 
+afni <- function (.fun, .args, afni.path, ...) {
+  afni.path <- "/usr/local/pkg/linux_openmp_64/"
+  system2(command = paste0(afni.path, .fun), args = .args, stdout = TRUE, ...)
+}
 
 read_betas_dmcc <- function(
   .subjs,
@@ -22,7 +26,7 @@ read_betas_dmcc <- function(
   ## initialize array
   
   pick.a.file <- 
-    file.path(.dir, .subjs[1], "SURFACE_RESULTS",  .task, paste0(.glm), paste0("STATS_", .subjs[1], "_REML_L.func.gii"))
+    file.path(.dir, .subjs[1], "SURFACE_RESULTS", .task, paste0(.glm), paste0("STATS_", .subjs[1], "_REML_L.func.gii"))
   labs <- afni("3dinfo", paste0("-label ", pick.a.file))
   labs <- unlist(strsplit(labs, "\\|"))
   is.reg <- !grepl("Full|block|Tstat|Fstat", labs)
@@ -91,7 +95,7 @@ for (glm.i in seq_len(nrow(glminfo))) {
   betas.i <- read_betas_dmcc(subjs55, glminfo[glm.i]$task, glminfo[glm.i]$name.glm, dir.analysis)
   saveRDS(
     betas.i, 
-    here("in", paste0("betas_dmcc_2trpk_", glminfo[glm.i]$task, "_", glminfo[glm.i]$name.glm,  ".RDS"))
+    here("in", paste0("betas_dmcc_2trpk_", glminfo[glm.i]$task, "_", glminfo[glm.i]$name.glm,  "1.RDS"))
     )
   
 }

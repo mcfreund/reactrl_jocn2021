@@ -231,7 +231,7 @@
 <h2>notes</h2>
 <p><strong>Data/sample/preproc</strong></p>
 <ul>
-<li>Subjects: 67 included (with complete fMRI data; INCLUDES TWINS)</li>
+<li>Subjects: 68 included (with complete fMRI data; INCLUDES TWINS)</li>
 <li>surface + fMRIprep</li>
 <li>schaefer 400-07</li>
 </ul>
@@ -555,20 +555,20 @@
 <tbody>
 <tr class="odd">
 <td align="left">bas_pro</td>
-<td align="right">9.091953</td>
-<td align="right">19.47435</td>
+<td align="right">8.552441</td>
+<td align="right">19.64480</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
 <td align="left">bas_rea</td>
-<td align="right">5.581978</td>
-<td align="right">12.50037</td>
+<td align="right">5.673164</td>
+<td align="right">12.77850</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
 <td align="left">pro_rea</td>
-<td align="right">5.026953</td>
-<td align="right">12.01258</td>
+<td align="right">4.917758</td>
+<td align="right">12.09287</td>
 <td align="right">0</td>
 </tr>
 </tbody>
@@ -587,12 +587,12 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">3.509975</td>
-<td align="right">0.5550244</td>
-<td align="right">8.147633</td>
-<td align="right">0.9550536</td>
+<td align="right">2.879277</td>
+<td align="right">0.7554051</td>
+<td align="right">6.962533</td>
+<td align="right">1.318696</td>
 <td align="right">0</td>
-<td align="right">0.3430357</td>
+<td align="right">0.1917605</td>
 </tr>
 </tbody>
 </table>
@@ -722,7 +722,13 @@
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">&quot;out&quot;</span>, <span class="st">&quot;fig_multivariate_triangle.tiff&quot;</span>),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  p_points_withstats, <span class="at">device =</span> <span class="st">&quot;tiff&quot;</span>, <span class="at">dpi =</span> <span class="dv">600</span>, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">unit =</span> <span class="st">&quot;cm&quot;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">&quot;out&quot;</span>, <span class="st">&quot;fig_multivariate_triangle.jpg&quot;</span>),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  p_points_withstats, <span class="at">device =</span> <span class="st">&quot;jpg&quot;</span>, <span class="at">dpi =</span> <span class="dv">600</span>, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">6</span>, <span class="at">unit =</span> <span class="st">&quot;cm&quot;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
 </div>
 

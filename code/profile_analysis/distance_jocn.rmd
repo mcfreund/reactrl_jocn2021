@@ -533,5 +533,10 @@ ggsave(
   )
 
 
+ggsave(
+  here("out", "fig_multivariate_triangle.jpg"),
+  p_points_withstats, device = "jpg", dpi = 600, width = 7, height = 6, unit = "cm"
+  )
+
 ```
 
