@@ -473,7 +473,7 @@ p_points_withstats <-
       # "p ", d_stats %>% filter(rn == "bas_pro") %>% pull("p") %>% format.pval
     ),
     size = stattext.size,
-    angle = 10, color = "grey50"
+    angle = 14, color = "grey50"
   ) +
   
   annotate(
@@ -485,7 +485,7 @@ p_points_withstats <-
       # "p ", d_stats %>% filter(rn == "bas_rea") %>% pull("p") %>% format.pval
     ),
     size = stattext.size,
-    angle = -29, color = "grey50"
+    angle = -26, color = "grey50"
   ) +
   
     
@@ -498,7 +498,7 @@ p_points_withstats <-
       # "p ", d_stats %>% filter(rn == "pro_rea") %>% pull("p") %>% format.pval
     ),
     size = stattext.size,
-    angle = 53, color = "grey50"
+    angle = 60.5, color = "grey50"
   ) +
 
   geom_text(
