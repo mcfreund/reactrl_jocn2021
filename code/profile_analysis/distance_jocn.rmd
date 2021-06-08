@@ -426,12 +426,14 @@ d %>%
 ```{r manuscript-fig}
 
 
-theme_set(theme_bw(base_size = 10))
+# theme_set(theme_bw(base_size = 10))
 
 
 centroids <- X_bar_loocv_lda %>% group_by(rn) %>% summarize(V1 = mean(V1), V2 = mean(V2))
 centroids_w <- centroids %>% pivot_wider(values_from = c("V1", "V2"), names_from = "rn")
 
+segment.size <- 1
+stattext.size <- 3
 
 p_points_withstats <-
 
@@ -443,23 +445,23 @@ p_points_withstats <-
   scale_color_discrete_qualitative(palette = "Dynamic") +
   
   geom_segment(
-    data = centroids_w, inherit.aes = FALSE, size = 0.5, alpha = 1, color = "grey50",
+    data = centroids_w, inherit.aes = FALSE, size = segment.size, alpha = 1, color = "grey50",
     aes(x = V1_baseline, xend = V1_proactive, y = V2_baseline, yend = V2_proactive)
   ) +
   
   geom_segment(
-    data = centroids_w, inherit.aes = FALSE, size = 0.5, alpha = 1, color = "grey50",
+    data = centroids_w, inherit.aes = FALSE, size = segment.size, alpha = 1, color = "grey50",
     aes(x = V1_baseline, xend = V1_reactive, y = V2_baseline, yend = V2_reactive)
   ) +
     
   geom_segment(
-    data = centroids_w, inherit.aes = FALSE, size = 0.5, alpha = 1, color = "grey50",
+    data = centroids_w, inherit.aes = FALSE, size = segment.size, alpha = 1, color = "grey50",
     aes(x = V1_reactive, xend = V1_proactive, y = V2_reactive, yend = V2_proactive), 
   ) +
     
   geom_point(
-    data = centroids, 
-    size = 1, pch = 21, color = "grey50"
+    data = centroids,
+    size = 2, pch = 16, color = "grey50"
   ) +
   
   annotate(
@@ -467,11 +469,11 @@ p_points_withstats <-
     y = (centroids_w$V2_baseline + centroids_w$V2_proactive)/2,
     geom = "text",
     label = paste0(
-      "\nt = ", d_stats %>% filter(rn == "bas_pro") %>% pull("s") %>% round(1)
+      "t = ", d_stats %>% filter(rn == "bas_pro") %>% pull("s") %>% round(1), "\n"
       # "p ", d_stats %>% filter(rn == "bas_pro") %>% pull("p") %>% format.pval
     ),
-    size = 2,
-    angle = 12, color = "grey50"
+    size = stattext.size,
+    angle = 10, color = "grey50"
   ) +
   
   annotate(
@@ -479,11 +481,11 @@ p_points_withstats <-
     y = (centroids_w$V2_baseline + centroids_w$V2_reactive)/2,
     geom = "text",
     label = paste0(
-      "t = ", d_stats %>% filter(rn == "bas_rea") %>% pull("s") %>% round(1), "\n"
+      "\nt = ", d_stats %>% filter(rn == "bas_rea") %>% pull("s") %>% round(1)
       # "p ", d_stats %>% filter(rn == "bas_rea") %>% pull("p") %>% format.pval
     ),
-    size = 2,
-    angle = -25, color = "grey50"
+    size = stattext.size,
+    angle = -29, color = "grey50"
   ) +
   
     
@@ -492,22 +494,22 @@ p_points_withstats <-
     y = (centroids_w$V2_proactive + centroids_w$V2_reactive)/2,
     geom = "text",
     label = paste0(
-      "t = ", d_stats %>% filter(rn == "pro_rea") %>% pull("s") %>% round(1), "\n"
+      "\nt = ", d_stats %>% filter(rn == "pro_rea") %>% pull("s") %>% round(1)
       # "p ", d_stats %>% filter(rn == "pro_rea") %>% pull("p") %>% format.pval
     ),
-    size = 2,
-    angle = 55, color = "grey50"
+    size = stattext.size,
+    angle = 53, color = "grey50"
   ) +
 
   geom_text(
     data =
       data.frame(
-        x = c(-12, -1, -8),
-        y = c(3, 4.5, -3),
+        x = c(-14, 0, -8),
+        y = c(2.25, 3, -2),
         label = sessions,
         rn = sessions
       ),
-    aes(x = x, y = y, label = label, color = rn), hjust = 0, size = 3, fontface = "bold") +
+    aes(x = x, y = y, label = label, color = rn), hjust = 0, size = 4, fontface = "bold") +
 
    theme(
      legend.position = "none", 
