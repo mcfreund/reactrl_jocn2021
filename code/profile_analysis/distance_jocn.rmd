@@ -131,9 +131,9 @@ loocv_lda_proj <- function(data_matrix, .whiten) {
     mu_train <- apply(X_train, 2, mean)  ## training set mean of (session) means
     X_test <- sweep(X_test, 1, mu_train)  ## center test set on mean of means in training set
     
-    rotation_matrix <- lda_proj(X_train, .whiten)
+    V_train <- lda_proj(X_train, .whiten)  ## discriminants
     
-    X_train_proj <- crossprod(X_test, rotation_matrix)
+    X_train_proj <- crossprod(X_test, V_train)
     X_train_proj <- data.table::as.data.table(X_train_proj, keep.rownames = TRUE)
     X_train_proj$subj <- subj.i
     
@@ -328,7 +328,7 @@ mu_k <- apply(X, 2:3, mean)  ## mean profile of each session (over subjs)
 data_matrix_c <- sweep(X, 2:3, mu_k)  ## center each session's profiles
 data_matrix_c <- aperm(data_matrix_c, c(1, 3, 2))
 dim(data_matrix_c) <- c(prod(dim(data_matrix_c)[1:2]), dim(data_matrix_c)[3])  ## concatenate sessions along rows
-Winv <- pracma::sqrtm(invcov.shrink(data_matrix_c, verbose = FALSE))$B
+Winv <- invcov.shrink(data_matrix_c, verbose = FALSE)
 
 ## est cross-validated distances:
 
@@ -345,7 +345,7 @@ for (subj.i in seq_len(dim(X)[1])) {
   x_test <- X[-subj.i, , ]
   x_test <- apply(x_test, 2:3, mean)
   
-  D[, , subj.i] <- distance_cv(t(Winv %*% x_train), t(Winv %*% x_test), M, regressors = sessions)
+  D[, , subj.i] <- distance_cv(t(Winv %*% x_train), t(x_test), M, regressors = sessions)
 
 }
 
@@ -373,8 +373,8 @@ d_stats <- d %>%
   group_by(rn) %>%
   summarize(
     b = mean(v),
-    s = t.test(v, alternative = "greater", )$statistic,
-    p = t.test(v, alternative = "greater", )$p.value
+    s = t.test(v, alternative = "greater")$statistic,
+    p = t.test(v, alternative = "greater")$p.value
     )
 
 d_stats_pairwise <- d %>%
