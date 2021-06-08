@@ -327,6 +327,10 @@ ggsave(
   p.conditional, device = "tiff", dpi = 600, width = 8, height = 6, unit = "cm"
   )
 
+ggsave(
+  here("out", "fig_crosstasksimil_conditional.jpg"),
+  p.conditional, device = "jpg", dpi = 600, width = 8, height = 6, unit = "cm"
+  )
 
 ```
 
