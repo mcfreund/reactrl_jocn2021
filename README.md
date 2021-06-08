@@ -4,6 +4,7 @@ contains analyses data, code, and results for two supplementary analyses: **cros
 
 ## crosstask_simil
 A cross-task pattern similarity analysis:
+
 <img src="https://github.com/mcfreund/reactrl_jocn2021/blob/main/out/fig_crosstasksimil_conditional.jpg?raw=true" alt="fig_crosstasksimil_conditional" width="500"/>
 
 | script name (./code/crosstask_simil) | reads | writes |
@@ -17,6 +18,7 @@ A cross-task pattern similarity analysis:
 
 ## profile analysis
 A multivariate analysis of differences between sessions in profiles of activation:
+
 <img src="https://github.com/mcfreund/reactrl_jocn2021/blob/main/out/fig_multivariate_triangle.jpg?raw=true" alt="fig_multivariate_triangle" width="500"/>
 
 | script name (./code/profile_analysis) | reads | writes |
