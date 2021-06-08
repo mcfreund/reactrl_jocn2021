@@ -11,7 +11,9 @@ A cross-task pattern similarity analysis.
 | 1_rsa_jocn_2trpk.R            | pattern similarity matrices: out/corr*.RDS              | subject-level similarity statistics: out/subjs_jocn.csv |
 | 2_rsa_jocn_2trpk.rmd          | subject-level similarity statistics: out/subjs_jocn.csv | analysis report: code/crosstask_simil/\*.html; figure: out/fig_crosstasksimil_conditional.tiff |
 
+* output: ![fig_crosstasksimil_conditional](https://github.com/mcfreund/reactrl_jocn2021/blob/main/out/fig_crosstasksimil_conditional.jpg?raw=true)
 * in/betas*.RDS wrangled from AFNI output files, which are not in remote repo, via code/\_wrangle/save_betas_dmcc_2trpk_surface.R
+
 
 ## profile analysis
 A multivariate analysis of differences between sessions in profiles of activation.
@@ -20,4 +22,5 @@ A multivariate analysis of differences between sessions in profiles of activatio
 | ----------- | -- | --- |
 | distance_jocn.rmd      | ROI-wise univariate contrasts on beta coefs from fMRI 1st-level GLM: in/roistats*.RDS | analysis report: code/profile_analysis/\*.html; figure: out/fig_multivariate_triangle.tiff |
 
+* output: ![fig_multivariate_triangle](https://github.com/mcfreund/reactrl_jocn2021/blob/main/out/fig_multivariate_triangle.jpg?raw=true)
 * in/roistats*.RDS wrangled from AFNI output files via code/\_wrangle/save_roistats.R
