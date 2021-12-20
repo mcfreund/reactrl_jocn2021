@@ -1,6 +1,10 @@
 # reactrl_jocn2021
 
-contains analyses data, code, and results for two supplementary analyses: **crosstask_simil** and **profile_analysis**
+**Paper**
+Braver, T. S., Kizhner, A., Tang, R., Freund, M. C., & Etzel, J. A. (2021). The dual mechanisms of cognitive control project. Journal of Cognitive Neuroscience, 33(9), 1990-2015.
+DOI: https://doi.org/10.1162/jocn_a_01768
+
+This repository contains analyses data, code, and results for two multivariate analyses: **crosstask_simil** and **profile_analysis**
 
 ## crosstask_simil
 A cross-task pattern similarity analysis:
